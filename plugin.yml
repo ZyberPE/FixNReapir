@@ -1,0 +1,18 @@
+name: FixAndRepair
+main: FixAndRepair\Main
+version: 1.0.0
+api: 5.0.0
+author: ZyberPE
+
+commands:
+  fix:
+    description: Repair the item in your hand
+    usage: "/fix"
+  repair:
+    description: Repair the item in your hand
+    usage: "/repair"
+
+permissions:
+  fixnrepair.bypass:
+    description: Repair without XP cost
+    default: op
