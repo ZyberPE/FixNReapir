@@ -8,11 +8,17 @@ commands:
   fix:
     description: Repair the item in your hand
     usage: "/fix"
+    permission: fixnrepair.use
   repair:
     description: Repair the item in your hand
     usage: "/repair"
+    permission: fixnrepair.use
 
 permissions:
+  fixnrepair.use:
+    description: Allows player to use /fix and /repair
+    default: true
+
   fixnrepair.bypass:
     description: Repair without XP cost
     default: op
