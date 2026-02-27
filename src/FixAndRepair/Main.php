@@ -11,7 +11,6 @@ use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase{
 
-    /** @var array<string, string> */
     private array $confirming = [];
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool{
@@ -22,18 +21,19 @@ class Main extends PluginBase{
         }
 
         if(!$sender->hasPermission("fixnrepair.use")){
-            $sender->sendMessage("§cYou don't have permission to use this command.");
+            $sender->sendMessage("§cYou don't have permission.");
             return true;
         }
 
         $item = $sender->getInventory()->getItemInHand();
 
         if($item->isNull()){
-            $sender->sendMessage("§cHold a repairable item.");
+            $sender->sendMessage("§cHold an item.");
             return true;
         }
 
-        if(!$item->isDamageable()){
+        // ✅ API 5 repairable check
+        if($item->getMaxDurability() <= 0){
             $sender->sendMessage("§cThis item cannot be repaired.");
             return true;
         }
@@ -43,27 +43,27 @@ class Main extends PluginBase{
             return true;
         }
 
-        $name = $sender->getName();
+        $playerName = $sender->getName();
         $cmd = strtolower($command->getName());
 
-        // First time running command
-        if(!isset($this->confirming[$name])){
-            $this->confirming[$name] = $cmd;
-            $sender->sendMessage("§eRun /$cmd again to confirm. It will cost §c30 XP levels§e.");
+        // First execution (confirmation step)
+        if(!isset($this->confirming[$playerName])){
+            $this->confirming[$playerName] = $cmd;
+            $sender->sendMessage("§eRun /$cmd again to confirm. Cost: §c30 XP levels");
             return true;
         }
 
         // Confirmed
-        if($this->confirming[$name] === $cmd){
+        if($this->confirming[$playerName] === $cmd){
 
-            unset($this->confirming[$name]);
+            unset($this->confirming[$playerName]);
 
-            // XP bypass for OP
             if(!$sender->hasPermission("fixnrepair.bypass")){
                 if($sender->getXpManager()->getXpLevel() < 30){
-                    $sender->sendMessage("§cYou need 30 XP levels to repair this item.");
+                    $sender->sendMessage("§cYou need 30 XP levels.");
                     return true;
                 }
+
                 $sender->getXpManager()->setXpLevel(
                     $sender->getXpManager()->getXpLevel() - 30
                 );
@@ -72,7 +72,7 @@ class Main extends PluginBase{
             $item->setDamage(0);
             $sender->getInventory()->setItemInHand($item);
 
-            $sender->sendMessage("§aItem successfully repaired!");
+            $sender->sendMessage("§aItem repaired successfully!");
         }
 
         return true;
