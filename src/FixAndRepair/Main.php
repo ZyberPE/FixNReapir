@@ -6,6 +6,7 @@ namespace FixAndRepair;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\item\Durable;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
@@ -32,8 +33,8 @@ class Main extends PluginBase{
             return true;
         }
 
-        // ✅ API 5 repairable check
-        if($item->getMaxDurability() <= 0){
+        // ✅ API 5 safe durability check
+        if(!$item instanceof Durable){
             $sender->sendMessage("§cThis item cannot be repaired.");
             return true;
         }
